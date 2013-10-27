@@ -22,3 +22,13 @@
 #define	CAPACITOR						2
 #define	ACOPLAMENTO						3
 #define AMPOP							4
+#define	E							5
+#define	F							6
+#define	G							7
+#define	H							8
+#define FONTE_CORRENTE_DC					9
+#define FONTE_TENSAO_DC						10
+#define FONTE_CORRENTE_SIN					11
+#define FONTE_TENSAO_SIN					12
+#define FONTE_CORRENTE_PULSE					13
+#define FONTE_TENSAO_PULSE					14

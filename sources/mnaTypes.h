@@ -7,9 +7,9 @@
 #include <errno.h>
 #include "mnaMacros.h"
 
-typedef struct fonte
+/* typedef struct fonte
 	{
-	int tipoFonte; /* 0 - fonte DC; 1 - fonte senoidal ; 2- fonte pulsada */
+	int tipoFonte;  0 - fonte DC; 1 - fonte senoidal ; 2- fonte pulsada 
 	char nome[TAMANHO_MAX_NOME_FONTE];
 	int noPositivo;
 	int noNegativo;
@@ -22,8 +22,8 @@ typedef struct fonte
 	double tDescida;
 	double tLigada;
 	double periodo;
-/*	struct fonte *proxima;	*/
-	} fonte;
+	struct fonte *proxima;	
+	} fonte; */
 
 typedef struct elementosNet
 	{
@@ -34,4 +34,13 @@ typedef struct elementosNet
 	double valor;
 	int noPositivoEntrada;
 	int noNegativoEntrada;
+	double nivelDC;
+	double amplitudeA;
+	double amplitudeB;
+	double frequenciaSenoide;
+	double fase;
+	double tSubida;
+	double tDescida;
+	double tLigada;
+	double periodo;
 	} elementosNet;
