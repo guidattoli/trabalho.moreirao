@@ -25,9 +25,17 @@
 	struct fonte *proxima;	
 	} fonte; */
 
+typedef struct simulacao
+	{
+	float tempoFinal;
+	float passo;
+	int nTermos;
+	double frequenciaMax;
+	} simulacao;
+
 typedef struct elementosNet
 	{
-	int tipoComponente; /* 0-R ; 1-L ; 2-Acompamento ; 3-C; 4-E ; 5-AMP.OP */
+	int tipoComponente; /* ver mnaMacros.h */
 	char nome[TAMANHO_MAX_NOME_COMPONENTE];
 	int noPositivo;
 	int noNegativo;

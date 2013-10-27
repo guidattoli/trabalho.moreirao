@@ -21,25 +21,34 @@ int main(int argc, char *argv[])
   FILE * escrita;
   FILE * leitura;
   
-  int linha2, coluna2;
-  int quantidadeNos;
-  elementosNet matrizComponentes[NUMERO_MAX_COMPONENTES+1][NUMERO_MAX_COMPONENTES+1];
-  elementosNet *componenteAtual;
-  fonte        matrizFontes[NUMERO_MAX_COMPONENTES+1];
-
-
+  int quantidadeNos, quantidadeElementos, tamanhoMatriz, contador;
+  elementosNet vetorComponentes[NUMERO_MAX_COMPONENTES+1];
+  simulacao informacoes;
   
- inicializaNetlist(&matrizComponentes);
+  double complex sistemaLinear[NUMERO_MAX_COMPONENTES+1][NUMERO_MAX_COMPONENTES+1];
+  char variaveis[NUMERO_MAX_COMPONENTES+1];
+  
+  quantidadeNos=quantidadeElementos=0;
 
- 	
-	for(linha2=0;linha2<5;linha2++)
-		{
-		for(coluna2=0;coluna2<5;coluna2++)
-			{
-			printf("%f   ",matrizComponentes[linha2][coluna2].valor);
-			}
-		printf("\n");
-		}
+	leitura = fopen (argv[1], "r");
+	if(leitura == NULL)
+	return ERRO_ABRIR_ARQUIVO;
+	  
+ /* if(!abreArquivo(argv[1],leitura))
+    exit(ERRO_ABRIR_ARQUIVO); */
+  
+  printf("passei aqui 1 \n");
+  
+  geraVetorElementos(leitura,&vetorComponentes,quantidadeNos,quantidadeElementos, &informacoes);
+  tamanhoMatriz = quantidadeNos + quantidadeElementos + 1;
+  
+  printf("passei aqui 2 \n");
+  
+  for(contador=0;contador<quantidadeElementos;contador++)
+  printf("Nome :%s\nValor : %lf\n",vetorComponentes[contador].nome,vetorComponentes[contador].valor);
+  printf("\n");
+  
+  
  
  printf("\n");
 

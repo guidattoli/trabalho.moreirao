@@ -12,410 +12,157 @@ int abreArquivo(char *argumento,FILE *arquivo)
 	return OK;	
 }
 
-void geraVetorElementos(FILE *arquivo,elementosNet (*netlist)[NUMERO_MAX_COMPONENTES+1],int quantidadeNos,int quantidadeElementos)
+void geraVetorElementos(FILE *arquivo,elementosNet (*netlist)[NUMERO_MAX_COMPONENTES+1],int quantidadeNos,int quantidadeElementos, simulacao *informacoes)
 {
-	char buffer[TAMANHO_LIMITE_LINHA],bufferAtoi[10],bufferDouble[50],bufferSIN_DC;
-	int inicial, final, contador;
+	char buffer[TAMANHO_LIMITE_LINHA], bufferTmp[TAMANHO_MAX_NOME_COMPONENTE], bufferTmp2[TAMANHO_MAX_NOME_COMPONENTE] ;
+	int inicial, final, contador, achei, achei2, lidos;
+	
 	
 	fgets (buffer, TAMANHO_LIMITE_LINHA, arquivo);
 	quantidadeNos = atoi(buffer);
-	quantidadeElementos = 0;
+	quantidadeElementos = lidos = 0;
 	while ((fgets (buffer, TAMANHO_LIMITE_LINHA+2, arquivo)) != NULL)
     {
 	switch(buffer[0]){
+	
 	case 'R':
-	  
-	(*netlist)[quantidadeElementos].tipoComponente= RESISTOR;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
+	(*netlist[quantidadeElementos]).tipoComponente = RESISTOR ;
+	lidos = sscanf(buffer,"%s %i %i %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).valor);  
 	quantidadeElementos++;
+	break;
 	
-		break;
 	case 'L': /* ver caso do acoplamento */
-	  
-	(*netlist)[quantidadeElementos].tipoComponente= INDUTOR;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
+	lidos = sscanf(buffer,"%s %s %s %lf",(*netlist[quantidadeElementos]).nome,bufferTmp,bufferTmp2,&(*netlist[quantidadeElementos]).valor);
 	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
+	if(bufferTmp[0]=='L' && bufferTmp2[0]=='L')
+	{
+	(*netlist[quantidadeElementos]).tipoComponente = ACOPLAMENTO ;
 	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
-	quantidadeElementos++;
-	
-		break;
-	case 'C':
-	
-	(*netlist)[quantidadeElementos].tipoComponente= CAPACITOR;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
-	quantidadeElementos++;
-	
-		break;
-	case 'E':
-	
-	(*netlist)[quantidadeElementos].tipoComponente= E;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
-	quantidadeElementos++;
-		break;
-	case 'F':
-	
-	(*netlist)[quantidadeElementos].tipoComponente= F;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
-	quantidadeElementos++;
-	
-		break;
-	case 'G':
-	  
-	(*netlist)[quantidadeElementos].tipoComponente= G;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
-	quantidadeElementos++;  
-	
-		break;
-	case 'H':
-	  
-	(*netlist)[quantidadeElementos].tipoComponente= H;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativoEntrada=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
-	quantidadeElementos++;
-		break;
-	case 'I':
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferSIN_DC, &buffer[inicial], (final-inicial));
-	bufferSIN_DC='\0';
-	
-	if(!strcmp(bufferSIN_DC,"DC"))
-	{ /*parametros dc */
-	(*netlist)[quantidadeElementos].tipoComponente= FONTE_CORRENTE_DC;
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
+	contador=0;
+	achei=achei2=0;
+	while(contador<quantidadeElementos && !achei && !achei2)
+		{
+		contador++;
+		if((*netlist[contador]).tipoComponente == INDUTOR)
+			{
+			if( !strcmp( (*netlist)[contador].nome, bufferTmp ))
+				{
+				(*netlist[quantidadeElementos]).noPositivo = (*netlist[contador]).noPositivo;
+				(*netlist[quantidadeElementos]).noNegativo = (*netlist[contador]).noNegativo;
+				achei=1;
+				}
+			if( !strcmp( (*netlist)[contador].nome, bufferTmp2 ))
+				{
+				(*netlist[quantidadeElementos]).noPositivoEntrada = (*netlist[contador]).noPositivo;
+				(*netlist[quantidadeElementos]).noNegativoEntrada = (*netlist[contador]).noNegativo;
+				achei2=1;
+				}				
+			}
+		
+		}
 	}
 	else
-	  if(!strcmp(bufferSIN_DC,"SIN"))
-	  {/*parametros senoidais */
-	  (*netlist)[quantidadeElementos].tipoComponente= FONTE_CORRENTE_SIN;
-	  
-
-	  }
-	  else
-	    if(!strcmp(bufferSIN_DC,"PULSE"))
-	    { /*paramentros PULSE */
-	    (*netlist)[quantidadeElementos].tipoComponente= FONTE_CORRENTE_PULSE;
-	    }
-	
-	/* */
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferDouble, &buffer[inicial], (final-inicial));
-	bufferDouble[final]='\0';
-	(*netlist)[quantidadeElementos].valor=atof(bufferAtoi);
-	
-	quantidadeElementos++;
-	
-		break;
-	case 'V':
-		break;
-	case 'O':
-	(*netlist)[quantidadeElementos].tipoComponente= AMPOP;
-	  
-	inicial=final=0;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy((*netlist)[quantidadeElementos].nome, &buffer[inicial], (final-inicial));
-	(*netlist)[quantidadeElementos].nome[final]='\0';
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noNegativo=atoi(bufferAtoi);
-	
-	inicial=final+1;
-	for(contador=inicial;buffer[contador]!=' ';contador++);
-	final=contador;
-	strncpy(bufferAtoi, &buffer[inicial], (final-inicial));
-	bufferAtoi[final]='\0';
-	(*netlist)[quantidadeElementos].noPositivoEntrada=atoi(bufferAtoi);
-	
-	quantidadeElementos++;
-		break;
-	case '*':
-		break;
+	{
+	(*netlist[quantidadeElementos]).tipoComponente = INDUTOR ;
+	(*netlist[quantidadeElementos]).noPositivo = atoi(bufferTmp);
+	(*netlist[quantidadeElementos]).noPositivo = atoi(bufferTmp2);
 	}
-/*	fprintf (escrita, "%s", nome); */
+	quantidadeElementos++;
+	
+	break;
+	
+	case 'C':
+	(*netlist[quantidadeElementos]).tipoComponente = CAPACITOR ;
+	lidos = sscanf(buffer,"%s %i %i %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).valor);  
+	quantidadeElementos++;
+	
+	break;
+	
+	case 'E':
+	(*netlist[quantidadeElementos]).tipoComponente = E ;
+	lidos = sscanf(buffer,"%s %i %i %i %i %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).noPositivoEntrada,&(*netlist[quantidadeElementos]).noNegativoEntrada,&(*netlist[quantidadeElementos]).valor);  
+	quantidadeElementos++;
+	break;
+	
+	case 'F':
+	(*netlist[quantidadeElementos]).tipoComponente = F ;
+	lidos = sscanf(buffer,"%s %i %i %i %i %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).noPositivoEntrada,&(*netlist[quantidadeElementos]).noNegativoEntrada,&(*netlist[quantidadeElementos]).valor);  
+	quantidadeElementos++;
+	break;
+	
+	case 'G':
+	(*netlist[quantidadeElementos]).tipoComponente = G ;
+	lidos = sscanf(buffer,"%s %i %i %i %i %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).noPositivoEntrada,&(*netlist[quantidadeElementos]).noNegativoEntrada,&(*netlist[quantidadeElementos]).valor);  
+	quantidadeElementos++; 
+	break;
+	
+	case 'H':
+	(*netlist[quantidadeElementos]).tipoComponente = H ;
+	lidos = sscanf(buffer,"%s %i %i %i %i %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).noPositivoEntrada,&(*netlist[quantidadeElementos]).noNegativoEntrada,&(*netlist[quantidadeElementos]).valor);  
+	quantidadeElementos++;
+	break;
+	
+	case 'I':
+	lidos = sscanf(buffer,"%*s %*i %*i %s",bufferTmp);
+	if(!strcmp("DC",bufferTmp))
+		{
+		(*netlist[quantidadeElementos]).tipoComponente = FONTE_CORRENTE_DC ;
+		sscanf(buffer,"%s %i %i %*s %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).valor);
+		}
+	if(!strcmp("SIN",bufferTmp))
+		{
+		(*netlist[quantidadeElementos]).tipoComponente = FONTE_CORRENTE_SIN ;
+		sscanf(buffer,"%s %i %i %*s %lf %lf %lf %*s %*s %lf %*s",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).nivelDC,&(*netlist[quantidadeElementos]).valor,&(*netlist[quantidadeElementos]).frequenciaSenoide,&(*netlist[quantidadeElementos]).fase);
+		}
+	if(!strcmp("PULSE",bufferTmp))
+		{
+		(*netlist[quantidadeElementos]).tipoComponente = FONTE_CORRENTE_PULSE ;
+		sscanf(buffer,"%s %i %i %*s %lf %lf %*s %lf %lf %lf %lf %*s",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).amplitudeA,&(*netlist[quantidadeElementos]).amplitudeB,&(*netlist[quantidadeElementos]).tSubida,&(*netlist[quantidadeElementos]).tDescida,&(*netlist[quantidadeElementos]).tLigada,&(*netlist[quantidadeElementos]).periodo);
+		}
+	quantidadeElementos++;
+	break;
+	
+	case 'V':	
+	lidos = sscanf(buffer,"%*s %*i %*i %s",bufferTmp);
+	if(!strcmp("DC",bufferTmp))
+		{
+		(*netlist[quantidadeElementos]).tipoComponente = FONTE_TENSAO_DC ;
+		sscanf(buffer,"%s %i %i %*s %lf",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).valor);
+		}
+	if(!strcmp("SIN",bufferTmp))
+		{
+		(*netlist[quantidadeElementos]).tipoComponente = FONTE_TENSAO_SIN ;
+		sscanf(buffer,"%s %i %i %*s %lf %lf %lf %*s %*s %lf %*s",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).nivelDC,&(*netlist[quantidadeElementos]).valor,&(*netlist[quantidadeElementos]).frequenciaSenoide,&(*netlist[quantidadeElementos]).fase);
+		}
+	if(!strcmp("PULSE",bufferTmp))
+		{
+		(*netlist[quantidadeElementos]).tipoComponente = FONTE_TENSAO_PULSE ;
+		sscanf(buffer,"%s %i %i %*s %lf %lf %*s %lf %lf %lf %lf %*s",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).amplitudeA,&(*netlist[quantidadeElementos]).amplitudeB,&(*netlist[quantidadeElementos]).tSubida,&(*netlist[quantidadeElementos]).tDescida,&(*netlist[quantidadeElementos]).tLigada,&(*netlist[quantidadeElementos]).periodo);
+		}
+	quantidadeElementos++;
+	break;
+	
+	case 'O':
+	(*netlist[quantidadeElementos]).tipoComponente = AMPOP ;
+	lidos = sscanf(buffer,"%s %i %i %i %i",(*netlist[quantidadeElementos]).nome,&(*netlist[quantidadeElementos]).noPositivo,&(*netlist[quantidadeElementos]).noNegativo,&(*netlist[quantidadeElementos]).noPositivoEntrada,&(*netlist[quantidadeElementos]).noNegativoEntrada);  
+	quantidadeElementos++;
+	break;
+	
+	case '*':
+	break;
+	
+	case '.':
+	lidos = sscanf(buffer,"%*s %f %f %i",&(*informacoes).tempoFinal,&(*informacoes).passo,&(*informacoes).nTermos);
+	if (lidos != 2 && lidos == 1)
+	{
+		(*informacoes).nTermos=0;
+		(*informacoes).frequenciaMax=1/(2*(*informacoes).passo);
+	}
+	break;
+	
+	
+	}
+
 	
 }
 }
