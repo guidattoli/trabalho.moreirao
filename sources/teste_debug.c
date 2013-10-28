@@ -67,18 +67,18 @@ int main(int argc, char *argv[])
 	while(contador2<quantidadeElementos && !achei && !achei2)
 		{
 		contador2++;
-		if((vetorComponentes[contador]).tipoComponente == INDUTOR)
+		if((vetorComponentes[contador2]).tipoComponente == INDUTOR)
 			{
-			if( !strcmp( (vetorComponentes)[contador].nome, bufferTmp ))
+			if( !strcmp( (vetorComponentes)[contador2].nome, bufferTmp ))
 				{
-				(vetorComponentes[quantidadeElementos]).noPositivo = (vetorComponentes[contador]).noPositivo;
-				(vetorComponentes[quantidadeElementos]).noNegativo = (vetorComponentes[contador]).noNegativo;
+				(vetorComponentes[quantidadeElementos]).noPositivo = (vetorComponentes[contador2]).noPositivo;
+				(vetorComponentes[quantidadeElementos]).noNegativo = (vetorComponentes[contador2]).noNegativo;
 				achei=1;
 				}
-			if( !strcmp( (vetorComponentes)[contador].nome, bufferTmp2 ))
+			if( !strcmp( (vetorComponentes)[contador2].nome, bufferTmp2 ))
 				{
-				(vetorComponentes[quantidadeElementos]).noPositivoEntrada = (vetorComponentes[contador]).noPositivo;
-				(vetorComponentes[quantidadeElementos]).noNegativoEntrada = (vetorComponentes[contador]).noNegativo;
+				(vetorComponentes[quantidadeElementos]).noPositivoEntrada = (vetorComponentes[contador2]).noPositivo;
+				(vetorComponentes[quantidadeElementos]).noNegativoEntrada = (vetorComponentes[contador2]).noNegativo;
 				achei2=1;
 				}				
 			}
@@ -161,7 +161,8 @@ int main(int argc, char *argv[])
 	if(!strcmp("PULSE",bufferTmp))
 		{
 		(vetorComponentes[quantidadeElementos]).tipoComponente = FONTE_TENSAO_PULSE ;
-		sscanf(buffer,"%s %i %i %*s %lf %lf %*s %lf %lf %lf %lf %*s",(vetorComponentes[quantidadeElementos]).nome,&(vetorComponentes[quantidadeElementos]).noPositivo,&(vetorComponentes[quantidadeElementos]).noNegativo,&(vetorComponentes[quantidadeElementos]).amplitudeA,&(vetorComponentes[quantidadeElementos]).amplitudeB,&(vetorComponentes[quantidadeElementos]).tSubida,&(vetorComponentes[quantidadeElementos]).tDescida,&(vetorComponentes[quantidadeElementos]).tLigada,&(vetorComponentes[quantidadeElementos]).periodo);
+		sscanf(buffer,"%s %i %i %*s %lf %lf %*s %lf %lf %lf %lf %*s",(
+		vetorComponentes[quantidadeElementos]).nome,&(vetorComponentes[quantidadeElementos]).noPositivo,&(vetorComponentes[quantidadeElementos]).noNegativo,&(vetorComponentes[quantidadeElementos]).amplitudeA,&(vetorComponentes[quantidadeElementos]).amplitudeB,&(vetorComponentes[quantidadeElementos]).tSubida,&(vetorComponentes[quantidadeElementos]).tDescida,&(vetorComponentes[quantidadeElementos]).tLigada,&(vetorComponentes[quantidadeElementos]).periodo);
 		}
 	quantidadeElementos++;
 	break;
@@ -194,6 +195,8 @@ int main(int argc, char *argv[])
 }
 
 /* parte interna, termina aqui */
+
+fclose(leitura);
   
   tamanhoMatriz = quantidadeNos + quantidadeElementos + 1;
   
@@ -203,7 +206,13 @@ int main(int argc, char *argv[])
   {
   if(vetorComponentes[contador].tipoComponente == RESISTOR || vetorComponentes[contador].tipoComponente == CAPACITOR || vetorComponentes[contador].tipoComponente == INDUTOR)
 	printf("Nome :%s\nNo A: %i   No B: %i\nValor : %lf\n",vetorComponentes[contador].nome,vetorComponentes[contador].noPositivo,vetorComponentes[contador].noNegativo,vetorComponentes[contador].valor);
-	
+  if(vetorComponentes[contador].tipoComponente == FONTE_CORRENTE_PULSE)
+	printf("Nome :%s\nNo A: %i   No B: %i\nAmp A : %lf Amp B : %lf\nT. Subida: %lf T. Descida :%lf T. Ligada : %lf Periodo : %lf",
+	vetorComponentes[contador].nome,vetorComponentes[contador].noPositivo,vetorComponentes[contador].noNegativo,vetorComponentes[contador].amplitudeA,vetorComponentes[contador].amplitudeB,vetorComponentes[contador].tSubida,vetorComponentes[contador].tDescida,vetorComponentes[contador].tLigada,vetorComponentes[contador].periodo);
+  if(vetorComponentes[contador].tipoComponente == FONTE_TENSAO_SIN)
+	printf("Nome :%s\nNo A: %i   No B: %i\nNivel DC : %lf Amp : %lf Freq.: %lf Angulo :%lf\n",
+	vetorComponentes[contador].nome,vetorComponentes[contador].noPositivo,vetorComponentes[contador].noNegativo,vetorComponentes[contador].nivelDC,vetorComponentes[contador].valor,vetorComponentes[contador].frequenciaSenoide,vetorComponentes[contador].fase);
+  
   }
   printf("\n");
   
